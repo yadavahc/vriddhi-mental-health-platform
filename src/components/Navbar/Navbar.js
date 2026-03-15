@@ -1,0 +1,102 @@
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { FaBars, FaTimes } from 'react-icons/fa';
+import './Navbar.css';
+
+const Navbar = () => {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId) => {
+    if (window.location.pathname !== '/') {
+      navigate('/');
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    setIsMobileMenuOpen(false);
+  };
+
+  return (
+    <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+      <div className="navbar-container container">
+        <Link to="/" className="navbar-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <img src="/images/vriddhi-logo.png" alt="Vriddhi Logo" className="navbar-logo-image" />
+          <img src="/images/text-logo.png" alt="Vriddhi Psychological Services" className="navbar-text-logo" />
+        </Link>
+
+        <div className="menu-icon" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </div>
+
+        <ul className={`navbar-menu ${isMobileMenuOpen ? 'active' : ''}`}>
+          <li>
+            <Link to="/" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMobileMenuOpen(false); }}>
+              Home
+            </Link>
+          </li>
+          <li>
+            <a href="#about" onClick={(e) => { e.preventDefault(); scrollToSection('about'); }}>About</a>
+          </li>
+          <li>
+            <a href="#founder" onClick={(e) => { e.preventDefault(); scrollToSection('founder'); }}>Founder</a>
+          </li>
+          <li>
+            <a href="#services" onClick={(e) => { e.preventDefault(); scrollToSection('services'); }}>Services</a>
+          </li>
+          <li>
+            <a href="#training" onClick={(e) => { e.preventDefault(); scrollToSection('training'); }}>Training</a>
+          </li>
+          <li>
+            <a href="#gallery" onClick={(e) => { e.preventDefault(); scrollToSection('gallery'); }}>Gallery</a>
+          </li>
+          <li>
+            <a href="#contact" onClick={(e) => { e.preventDefault(); scrollToSection('contact'); }}>Contact</a>
+          </li>
+          <li>
+            <a 
+              href="https://wa.me/917845974033" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary navbar-btn"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Book Session
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://bookyourslotatvriddhi.setmore.com/" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-secondary navbar-btn"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Book Space
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
